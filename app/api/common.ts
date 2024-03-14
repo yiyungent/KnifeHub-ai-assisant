@@ -3,8 +3,36 @@ import { getServerSideConfig } from "../config/server";
 import { DEFAULT_MODELS, OPENAI_BASE_URL } from "../constant";
 import { collectModelTable } from "../utils/model";
 import { makeAzurePath } from "../azure";
+import { v4 as uuidv4 } from "uuid";
 
 const serverConfig = getServerSideConfig();
+
+const getGigachatToken = async (token: string) => {
+  try {
+    let basicToken = `Basic ${token.replaceAll("Bearer ", "").trim()}`;
+    const formData = new URLSearchParams();
+    formData.append("scope", "GIGACHAT_API_PERS");
+    formData.append("grant_type", "client_credentials");
+    const fetchOptions: RequestInit = {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Cache-Control": "no-store",
+        Authorization: basicToken,
+        RqUID: uuidv4(),
+      },
+      method: "POST",
+      body: formData.toString(),
+    };
+    const res = await fetch(
+      "https://ngw.devices.sberbank.ru:9443/api/v2/oauth",
+      fetchOptions,
+    );
+    const json = await res.json();
+    return `Bearer ${json.access_token}`;
+  } catch (error) {
+    console.error("Get GigaChat Token Error", error);
+  }
+};
 
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
@@ -74,6 +102,7 @@ export async function requestOpenai(req: NextRequest) {
   if (serverConfig.isAzure) {
     baseUrl = `${baseUrl}/${jsonBody?.model}`;
   }
+  authValue = await getGigachatToken(authValue);
   const fetchUrl = `${baseUrl}/${path}`;
   const fetchOptions: RequestInit = {
     headers: {
