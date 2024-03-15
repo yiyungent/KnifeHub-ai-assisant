@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const serverConfig = getServerSideConfig();
 
-const getGigachatToken = async (token: string) => {
+export const getGigachatToken = async (token: string) => {
   try {
     let basicToken = `Basic ${token.replaceAll("Bearer ", "").trim()}`;
     const formData = new URLSearchParams();
@@ -28,6 +28,7 @@ const getGigachatToken = async (token: string) => {
       fetchOptions,
     );
     const json = await res.json();
+    console.log(json.access_token);
     return `Bearer ${json.access_token}`;
   } catch (error) {
     console.error("Get GigaChat Token Error", error);

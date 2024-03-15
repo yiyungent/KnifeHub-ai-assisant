@@ -463,7 +463,19 @@ export const useChatStore = createPersistStore(
             onFinish(message) {
               botMessage.streaming = false;
               if (message) {
+                if (message.includes("<img src=")) {
+                  const regex = /<img[^>]+src="([^">]+)"/g;
+                  const match = regex.exec(message);
+
+                  if (match && match[1]) {
+                    const srcString = match[1];
+                    message += "\n" + `![img](/api/file/${srcString})`;
+                  } else {
+                    console.log("未找到 src 属性中的字符串");
+                  }
+                }
                 botMessage.content = message;
+                console.log(message);
                 get().onNewMessage(botMessage);
               }
               ChatControllerPool.remove(session.id, botMessage.id);
