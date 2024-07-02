@@ -196,6 +196,7 @@ export class AgentApi {
   }
 
   async getOpenAIApiKey(token: string) {
+    // TODO: 替换点, 从后端获取 apiKey
     const serverConfig = getServerSideConfig();
     const isApiKey = !token.startsWith(ACCESS_CODE_PREFIX);
 

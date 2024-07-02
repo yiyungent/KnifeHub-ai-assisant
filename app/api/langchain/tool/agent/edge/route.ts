@@ -27,6 +27,7 @@ async function handle(req: NextRequest) {
     const authToken = req.headers.get("Authorization") ?? "";
     const token = authToken.trim().replaceAll("Bearer ", "").trim();
 
+    // TODO: 替换点
     const apiKey = await agentApi.getOpenAIApiKey(token);
     const baseUrl = await agentApi.getOpenAIBaseUrl(reqBody.baseUrl);
 
