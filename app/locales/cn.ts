@@ -279,6 +279,11 @@ const cn = {
     },
 
     Access: {
+      AccessId: {
+        Title: "用户名",
+        SubTitle: "管理员已开启加密访问",
+        Placeholder: "请输入访问用户名",
+      },
       AccessCode: {
         Title: "访问密码",
         SubTitle: "管理员已开启加密访问",

@@ -282,10 +282,15 @@ const en: LocaleType = {
       NoAccess: "Enter API Key to check balance",
     },
     Access: {
+      AccessId: {
+        Title: "UserName",
+        SubTitle: "Access control Enabled",
+        Placeholder: "Enter UserName",
+      },
       AccessCode: {
         Title: "Access Code",
         SubTitle: "Access control Enabled",
-        Placeholder: "Enter Code",
+        Placeholder: "Enter Password",
       },
       CustomEndpoint: {
         Title: "Custom Endpoint",

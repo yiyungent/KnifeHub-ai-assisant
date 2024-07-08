@@ -272,6 +272,11 @@ const tw = {
     },
 
     Access: {
+      AccessId: {
+        Title: "UserName",
+        SubTitle: "Access control Enabled",
+        Placeholder: "Enter UserName",
+      },
       AccessCode: {
         Title: "存取密碼",
         SubTitle: "管理員已開啟加密存取",

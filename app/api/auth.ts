@@ -17,9 +17,14 @@ function getIP(req: NextRequest) {
 function parseApiKey(bearToken: string) {
   const token = bearToken.trim().replaceAll("Bearer ", "").trim();
   const isApiKey = !token.startsWith(ACCESS_CODE_PREFIX);
-
+  const accessIdAndAccessCode = token.slice(ACCESS_CODE_PREFIX.length);
   return {
-    accessCode: isApiKey ? "" : token.slice(ACCESS_CODE_PREFIX.length),
+    accessId: isApiKey
+      ? ""
+      : accessIdAndAccessCode.substring(0, accessIdAndAccessCode.indexOf(".")),
+    accessCode: isApiKey
+      ? ""
+      : accessIdAndAccessCode.substring(accessIdAndAccessCode.indexOf(".") + 1),
     apiKey: isApiKey ? token : "",
   };
 }
@@ -28,7 +33,7 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
   const authToken = req.headers.get("Authorization") ?? "";
 
   // check if it is openai api key or user token
-  let { accessCode, apiKey } = parseApiKey(authToken);
+  let { accessId, accessCode, apiKey } = parseApiKey(authToken);
 
   if (modelProvider === ModelProvider.GeminiPro) {
     const googleAuthToken = req.headers.get("x-goog-api-key") ?? "";
@@ -38,9 +43,9 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
   const hashedCode = md5.hash(accessCode ?? "").trim();
 
   const serverConfig = getServerSideConfig();
-  console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
+  // console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
   console.log("[Auth] got access code:", accessCode);
-  console.log("[Auth] hashed access code:", hashedCode);
+  // console.log("[Auth] hashed access code:", hashedCode);
   console.log("[User IP] ", getIP(req));
   console.log("[Time] ", new Date().toLocaleString());
 
@@ -106,7 +111,7 @@ export function googleAuth(req: NextRequest) {
   const authToken = req.headers.get("Authorization") ?? "";
 
   // check if it is openai api key or user token
-  const { accessCode, apiKey } = parseApiKey(authToken);
+  const { accessId, accessCode, apiKey } = parseApiKey(authToken);
 
   const hashedCode = md5.hash(accessCode ?? "").trim();
 

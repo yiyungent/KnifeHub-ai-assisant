@@ -907,6 +907,21 @@ export function Settings() {
         </List>
 
         <List id={SlotID.CustomModel}>
+          <ListItem
+            title={Locale.Settings.Access.AccessId.Title}
+            subTitle={Locale.Settings.Access.AccessId.SubTitle}
+          >
+            <input
+              value={accessStore.accessId}
+              type="text"
+              placeholder={Locale.Settings.Access.AccessId.Placeholder}
+              onChange={(e) => {
+                accessStore.update(
+                  (access) => (access.accessId = e.currentTarget.value),
+                );
+              }}
+            ></input>
+          </ListItem>
           {showAccessCode && (
             <ListItem
               title={Locale.Settings.Access.AccessCode.Title}

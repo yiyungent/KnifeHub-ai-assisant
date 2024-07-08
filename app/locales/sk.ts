@@ -274,6 +274,11 @@ const sk: PartialLocaleType = {
       NoAccess: "Zadajte API kľúč na skontrolovanie zostatku",
     },
     Access: {
+      AccessId: {
+        Title: "UserName",
+        SubTitle: "Access control Enabled",
+        Placeholder: "Enter UserName",
+      },
       AccessCode: {
         Title: "Prístupový kód",
         SubTitle: "Povolený prístupový kód",

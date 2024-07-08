@@ -273,6 +273,11 @@ const pt: PartialLocaleType = {
       NoAccess: "Insira a Chave API para verificar o saldo",
     },
     Access: {
+      AccessId: {
+        Title: "UserName",
+        SubTitle: "Access control Enabled",
+        Placeholder: "Enter UserName",
+      },
       AccessCode: {
         Title: "Código de Acesso",
         SubTitle: "Controle de Acesso Habilitado",

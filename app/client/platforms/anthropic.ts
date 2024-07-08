@@ -428,7 +428,9 @@ function getAuthKey(apiKey = "") {
     !!accessStore.accessCode
   ) {
     // or use access code
-    authKey = bearer(ACCESS_CODE_PREFIX + accessStore.accessCode);
+    authKey = bearer(
+      ACCESS_CODE_PREFIX + accessStore.accessId + "." + accessStore.accessCode,
+    );
   }
 
   return authKey;

@@ -249,7 +249,7 @@ export function getHeaders(ignoreHeaders?: boolean) {
   ) {
     headers[authHeader] = makeBearer(
       // TODO: 替换点, 除了 accessCode 还需要当前访问标识符
-      ACCESS_CODE_PREFIX + accessStore.accessCode,
+      ACCESS_CODE_PREFIX + accessStore.accessId + "." + accessStore.accessCode,
     );
   }
 

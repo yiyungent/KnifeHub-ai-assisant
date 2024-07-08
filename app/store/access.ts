@@ -18,6 +18,7 @@ const DEFAULT_OPENAI_URL =
     : ApiPath.OpenAI;
 
 const DEFAULT_ACCESS_STATE = {
+  accessId: "",
   accessCode: "",
   useCustomConfig: false,
 

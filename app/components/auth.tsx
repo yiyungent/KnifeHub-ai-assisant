@@ -19,6 +19,7 @@ export function AuthPage() {
   const resetAccessCode = () => {
     accessStore.update((access) => {
       access.openaiApiKey = "";
+      access.accessId = "";
       access.accessCode = "";
     });
   }; // Reset access code to empty string
@@ -39,6 +40,17 @@ export function AuthPage() {
       <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
       <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div>
 
+      <input
+        className={styles["auth-input"]}
+        type="text"
+        placeholder={Locale.Auth.Input}
+        value={accessStore.accessId}
+        onChange={(e) => {
+          accessStore.update(
+            (access) => (access.accessId = e.currentTarget.value),
+          );
+        }}
+      />
       <input
         className={styles["auth-input"]}
         type="password"
