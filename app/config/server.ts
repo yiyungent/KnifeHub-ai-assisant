@@ -4,12 +4,9 @@ import { DEFAULT_MODELS } from "../constant";
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
+      BACKEND_BASE_URL?: string;
       PROXY_URL?: string; // docker only
 
-      OPENAI_API_KEY?: string;
-      CODE?: string;
-
-      BASE_URL?: string;
       OPENAI_ORG_ID?: string; // openai only
 
       VERCEL?: string;
@@ -41,18 +38,18 @@ declare global {
   }
 }
 
-const ACCESS_CODES = (function getAccessCodes(): Set<string> {
-  const code = process.env.CODE;
+// const ACCESS_CODES = (function getAccessCodes(): Set<string> {
+//   const code = process.env.CODE;
 
-  try {
-    const codes = (code?.split(",") ?? [])
-      .filter((v) => !!v)
-      .map((v) => md5.hash(v.trim()));
-    return new Set(codes);
-  } catch (e) {
-    return new Set();
-  }
-})();
+//   try {
+//     const codes = (code?.split(",") ?? [])
+//       .filter((v) => !!v)
+//       .map((v) => md5.hash(v.trim()));
+//     return new Set(codes);
+//   } catch (e) {
+//     return new Set();
+//   }
+// })();
 
 function getApiKey(keys?: string) {
   const apiKeyEnvVar = keys ?? "";
@@ -70,11 +67,52 @@ function getApiKey(keys?: string) {
   return apiKey;
 }
 
-export const getServerSideConfig = () => {
+interface ServerConfigUser {
+  code: number;
+  message: string;
+  data: {
+    OPENAI_API_KEY?: string;
+    BASE_URL?: string;
+  };
+}
+
+async function getServerSideConfigUser(accessId: string, accessCode: string) {
+  const res = await fetch(
+    `${process.env.BACKEND_BASE_URL}/api/AiAssistant/user`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        accessId,
+        accessCode,
+      }),
+    },
+  );
+  const resJson = await res.json();
+  const rtn: ServerConfigUser = {
+    code: resJson.code,
+    message: resJson.message,
+    data: resJson.data,
+  };
+
+  return rtn;
+}
+
+export const getServerSideConfig = async (
+  accessId: string,
+  accessCode: string,
+) => {
   if (typeof process === "undefined") {
     throw Error(
       "[Server Config] you are importing a nodejs-only module outside of nodejs",
     );
+  }
+
+  const { code, data } = await getServerSideConfigUser(accessId, accessCode);
+  if (code < 0) {
+    return null;
   }
 
   const disableGPT4 = !!process.env.DISABLE_GPT4;
@@ -106,8 +144,10 @@ export const getServerSideConfig = () => {
   ).split(",");
 
   return {
-    baseUrl: process.env.BASE_URL,
-    apiKey: getApiKey(process.env.OPENAI_API_KEY),
+    // baseUrl: process.env.BASE_URL,
+    baseUrl: data.BASE_URL,
+    // apiKey: getApiKey(process.env.OPENAI_API_KEY),
+    apiKey: data.OPENAI_API_KEY,
     openaiOrgId: process.env.OPENAI_ORG_ID,
 
     isAzure,

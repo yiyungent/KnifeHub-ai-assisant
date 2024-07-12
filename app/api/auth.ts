@@ -49,12 +49,12 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
   console.log("[User IP] ", getIP(req));
   console.log("[Time] ", new Date().toLocaleString());
 
-  if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !apiKey) {
-    return {
-      error: true,
-      msg: !accessCode ? "empty access code" : "wrong access code",
-    };
-  }
+  // if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !apiKey) {
+  //   return {
+  //     error: true,
+  //     msg: !accessCode ? "empty access code" : "wrong access code",
+  //   };
+  // }
 
   if (serverConfig.hideUserApiKey && !!apiKey) {
     return {
